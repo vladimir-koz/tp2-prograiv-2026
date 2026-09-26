@@ -10,3 +10,15 @@ describe('GET /notes/:id',()=>{
         expect(response.body).toEqual({error:'NotFound'});
     });
 });
+
+describe('PATCH /notes/:id', () => {
+    it('responde 404 cuando la nota no existe', async () => {
+        const app = makeApp(':memory:');
+        const response = await request(app)
+        .patch('/notes/999')
+        .send({ title: 'Título nuevo' });
+
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({ error: 'NotFound' });
+    });
+});
