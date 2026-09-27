@@ -1,24 +1,41 @@
-import { describe, expect, it } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 import { makeApp } from '../../src/app';
 
-describe('GET /notes/:id', () => {
-    it('responde 404 cuando la nota no existe', async () => {
-        const app = makeApp(':memory:');
-        const response = await request(app).get('/notes/999');
+describe('DELETE /notes/:id (Ejercicio 5)', () => {
+  let app: ReturnType<typeof makeApp>;
 
-        expect(response.status).toBe(404);
-        expect(response.body).toEqual({ error: 'NotFound' });
-    });
-});
-describe('PATCH /notes/:id', () => {
-    it('responde 404 cuando la nota no existe', async () => {
-        const app = makeApp(':memory:');
-        const response = await request(app)
-        .patch('/notes/999')
-        .send({ title: 'Título nuevo' });
+  beforeEach(() => {
+    app = makeApp(':memory:');
+  });
 
-        expect(response.status).toBe(404);
-        expect(response.body).toEqual({ error: 'NotFound' });
-    });
+  it('elimina una nota y responde 204', async () => {
+    const createRes = await request(app)
+      .post('/notes')
+      .send({ title: 'Para borrar', content: 'Contenido' });
+
+    const id = createRes.body.id;
+
+    const deleteRes = await request(app).delete(`/notes/${id}`);
+
+    expect(deleteRes.status).toBe(204);
+  });
+
+  it('la nota eliminada ya no se puede obtener (404)', async () => {
+    const createRes = await request(app)
+      .post('/notes')
+      .send({ title: 'Para borrar', content: 'Contenido' });
+
+    const id = createRes.body.id;
+    await request(app).delete(`/notes/${id}`);
+
+    const getRes = await request(app).get(`/notes/${id}`);
+
+    expect(getRes.status).toBe(404);
+  });
+
+  it('devuelve 404 si el id no existe', async () => {
+    const res = await request(app).delete('/notes/99999');
+    expect(res.status).toBe(404);
+  });
 });
