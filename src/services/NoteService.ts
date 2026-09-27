@@ -32,7 +32,7 @@ export class NoteServiceImpl implements NoteService {
     // 🟢 EJERCICIO 2: esta función YA FUNCIONA.
     // No existe todavía el archivo tests/unit/noteService.list.test.ts:
     // escríbanlo ustedes cubriendo al menos "lista vacía" y "varias notas".
-    return [];
+    return this.repo.findAll();
   }
 
   getNote(id: number): Note | undefined {
