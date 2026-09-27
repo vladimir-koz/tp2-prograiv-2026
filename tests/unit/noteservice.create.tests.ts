@@ -1,6 +1,6 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { NoteServiceImpl } from '../../src/services/NotesService'; // o NoteService dependiendo de tu archivo
+import { NoteServiceImpl } from '../../src/services/NoteService';
 import { SqliteNoteRepository } from '../../src/repositories/NoteRepository';
 import { createDb } from '../../src/db/connection';
 
