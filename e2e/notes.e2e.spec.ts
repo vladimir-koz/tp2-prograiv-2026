@@ -60,3 +60,18 @@ test('completa el flujo de crear, obtener, modificar y eliminar una nota', async
     expect.arrayContaining([expect.objectContaining({ id: createdNote.id })])
   );
 });
+
+test('rechaza la creación de una nota sin título y no modifica la lista', async ({ request }) => {
+  const createResponse = await request.post('/notes', {
+    data: { content: 'Nota sin título' }
+  });
+
+  expect(createResponse.status()).toBe(400);
+  expect(await createResponse.json()).toMatchObject({
+    error: 'ValidationError'
+  });
+
+  const listResponse = await request.get('/notes');
+  expect(listResponse.status()).toBe(200);
+  expect(await listResponse.json()).toHaveLength(2);
+});
